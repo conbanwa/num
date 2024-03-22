@@ -5,9 +5,37 @@ import (
 	"math"
 	"strconv"
 	"sync"
-
-	"golang.org/x/exp/constraints"
 )
+
+type Integer interface {
+	Signed | Unsigned
+}
+type Signed interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64
+}
+type Unsigned interface {
+	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
+}
+
+func ParseInteger[T Integer](v any) T {
+	if v == nil {
+		return 0
+	}
+	var i int64
+	switch v.(type) {
+	case int:
+		return T(v.(int))
+	case float64:
+		return T(v.(float64))
+	case string:
+		i, _ = strconv.ParseInt(v.(string), 0, 64)
+	case nil:
+		return 0
+	default:
+		i, _ = strconv.ParseInt(fmt.Sprint(v), 0, 64)
+	}
+	return T(i)
+}
 
 func ParseFloat64(a any) (f float64, err error) {
 	switch a := a.(type) {
@@ -51,27 +79,6 @@ func ToFloat64(a any) float64 {
 	}
 	return f
 }
-
-func ParseInteger[T constraints.Integer](v any) T {
-	if v == nil {
-		return 0
-	}
-	var i int64
-	switch v.(type) {
-	case int:
-		return T(v.(int))
-	case float64:
-		return T(v.(float64))
-	case string:
-		i, _ = strconv.ParseInt(v.(string), 0, 64)
-	case nil:
-		return 0
-	default:
-		i, _ = strconv.ParseInt(fmt.Sprint(v), 0, 64)
-	}
-	return T(i)
-}
-
 func FloatToString(v float64, step float64) string {
 	return strconv.FormatFloat(FloatToFixed(v, step), 'f', int(-math.Log10(step)+0.5), 64)
 }
