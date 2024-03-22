@@ -9,6 +9,49 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+func ParseFloat64(a any) (f float64, err error) {
+	switch a := a.(type) {
+	case int:
+		f = float64(a)
+	case int8:
+		f = float64(a)
+	case int16:
+		f = float64(a)
+	case int32:
+		f = float64(a)
+	case int64:
+		f = float64(a)
+	case uint:
+		f = float64(a)
+	case uint8:
+		f = float64(a)
+	case uint16:
+		f = float64(a)
+	case uint32:
+		f = float64(a)
+	case uint64:
+		f = float64(a)
+	case float32:
+		f = float64(a)
+	case float64:
+		f = a
+	case string:
+		f, err = strconv.ParseFloat(a, 64)
+	default:
+		err = fmt.Errorf("not a number")
+	}
+	return
+}
+
+func ToFloat64(a any) float64 {
+	f, err := ParseFloat64(a)
+	if err != nil {
+		panic(err)
+		return 0
+	}
+	return f
+}
+
 func ParseInteger[T constraints.Integer](v any) T {
 	if v == nil {
 		return 0
@@ -41,7 +84,7 @@ func FloatToFixed(v float64, step float64) float64 {
 }
 
 func SyncMapLen(m *sync.Map) (l int) {
-	m.Range(func(key, value interface{}) bool {
+	m.Range(func(key, value any) bool {
 		l++
 		return true
 	})
