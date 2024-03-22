@@ -1,6 +1,6 @@
 module github.com/conbanwa/num
 
-go 1.18.10
+go 1.21
 
 require (
 	github.com/conbanwa/logs v0.4.7
