@@ -9,19 +9,19 @@ func Len(sm *sync.Map) (l int) {
 	return
 }
 
-func ValueStrict[T any](sm *sync.Map, k any) (res T) {
+func ValueStrict[T any](sm *sync.Map, k any) T {
 	value, ok := sm.Load(k)
 	if !ok {
-		panic("inferred wrong type")
+		panic("no such key")
 	}
-	res, ok = value.(T)
+	res, ok := value.(T)
 	if !ok {
 		panic("inferred wrong type")
 	}
-	return
+	return res
 }
 
-func Value[T any](sm *sync.Map, k any) (res T) {
+func Value(sm *sync.Map, k any) any {
 	value, _ := sm.Load(k)
-	return value.(T)
+	return value
 }
