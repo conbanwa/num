@@ -1,27 +1,21 @@
 package syncmap
 
 import (
+	"reflect"
 	"sync"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func Len(sm *sync.Map) (l int) {
-	sm.Range(func(key, value any) bool { l++; return true })
-	return
-}
-
-func ValueStrict[T any](sm *sync.Map, k any) (res T) {
-	value, ok := sm.Load(k)
-	if !ok {
-		panic("inferred wrong type")
-	}
-	res, ok = value.(T)
-	if !ok {
-		panic("inferred wrong type")
-	}
-	return
-}
-
-func Value[T any](sm *sync.Map, k any) (res T) {
-	value, _ := sm.Load(k)
-	return value.(T)
+func TestSyncMapValue(t *testing.T) {
+	var sm sync.Map
+	assert.Equal(t, 0, Len(&sm))
+	sm.Store(1, []int{2})
+	assert.Equal(t, 1, Len(&sm))
+	t.Run("tt.name", func(t *testing.T) {
+		if gotRes := ValueStrict[[]int](&sm, 1); !reflect.DeepEqual(gotRes, []int{2}) || !reflect.DeepEqual(Value(&sm, 1), []int{2}) {
+			t.Errorf("ValueStrict() = %v, want %v", gotRes, []int{})
+		}
+	})
 }
