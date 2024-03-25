@@ -1,9 +1,9 @@
 module github.com/conbanwa/num
 
-go 1.21
+go 1.21.4
 
 require (
-	github.com/conbanwa/logs v0.4.7
+	github.com/conbanwa/compare v0.0.1
 	github.com/stretchr/testify v1.9.0
 )
 
