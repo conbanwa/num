@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/conbanwa/logs"
+	"github.com/conbanwa/compare"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -79,11 +79,11 @@ func parseFloat(t *testing.T, a any) {
 		assert.Equal(t, float32(f), a)
 		return
 	}
-	assert.Equalf(t, fmt.Sprint(a), fmt.Sprint(f), "ParseFloat64(%v)", a)
+	assert.Equalf(t, fmt.Sprint(a), fmt.Sprint(f), "ToFloat64(%v)", a)
 }
 
 func TestParseInteger(t *testing.T) {
-	t.Log(ParseInteger[int64](-1))
+	t.Log(ToInt[int64](-1))
 	type args struct {
 		v any
 	}
@@ -100,7 +100,7 @@ func TestParseInteger(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := tt.args.v
-			assert.Equalf(t, tt.want, ParseInteger[integer](v), "ParseInteger(%v)", v)
+			assert.Equalf(t, tt.want, ToInt[integer](v), "ToInt(%v)", v)
 			parseInt(t, v)
 		})
 	}
@@ -108,22 +108,22 @@ func TestParseInteger(t *testing.T) {
 
 func parseInt(t *testing.T, v any) {
 	var arr []string
-	var into = []any{v, ParseInteger[int32](v), ParseInteger[int](v), ParseInteger[int64](v), v.(int)}
+	var into = []any{v, ToInt[int32](v), ToInt[int](v), ToInt[int64](v), v.(int)}
 	for _, in := range into {
 		arr = append(arr, fmt.Sprint(in))
 	}
-	if !logs.Uniform(arr...) {
-		t.Error(ParseInteger[int32](v), ParseInteger[int](v), v.(int) < 0, ParseInteger[int64](v), v.(int))
+	if !compare.AreEqual(arr...) {
+		t.Error(ToInt[int32](v), ToInt[int](v), v.(int) < 0, ToInt[int64](v), v.(int))
 	}
 }
 func parseUint(t *testing.T, v any) {
 	var arr []string
-	var into = []any{v, ParseInteger[int32](v), ParseInteger[int](v), ParseInteger[int64](v), v.(int)}
+	var into = []any{v, ToInt[int32](v), ToInt[int](v), ToInt[int64](v), v.(int)}
 	for _, in := range into {
 		arr = append(arr, fmt.Sprint(in))
 	}
-	if !logs.Uniform(arr...) {
-		t.Error(ParseInteger[int32](v), ParseInteger[int](v), v.(int) < 0, ParseInteger[int64](v), v.(int))
+	if !compare.AreEqual(arr...) {
+		t.Error(ToInt[int32](v), ToInt[int](v), v.(int) < 0, ToInt[int64](v), v.(int))
 	}
 }
 
@@ -138,6 +138,6 @@ func FuzzParseInt(f *testing.F) {
 }
 
 func testLargeUint(f *testing.F, zanies uint) {
-	f.Log(zanies, int(zanies), ParseInteger[int](zanies))
-	assert.Equal(f, int(zanies), ParseInteger[int](zanies))
+	f.Log(zanies, int(zanies), ToInt[int](zanies))
+	assert.Equal(f, int(zanies), ToInt[int](zanies))
 }
