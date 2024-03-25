@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math"
 	"strconv"
-	"sync"
 )
 
 type Integer interface {
@@ -17,24 +16,37 @@ type Unsigned interface {
 	~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
 }
 
-func ParseInteger[T Integer](v any) T {
+func ToInt[T Integer](v any) T {
+	n, err := ParseInt[T](v)
+	Panic(err)
+	return n
+}
+
+func ToFloat64(a any) float64 {
+	f, err := ParseFloat64(a)
+	Panic(err)
+	return f
+}
+
+func ParseInt[T Integer](v any) (n T, err error) {
 	if v == nil {
-		return 0
+		err = fmt.Errorf("object is nil")
+		return
 	}
 	var i int64
 	switch v.(type) {
 	case int:
-		return T(v.(int))
+		return T(v.(int)), nil
 	case float64:
-		return T(v.(float64))
+		return T(v.(float64)), nil
 	case string:
-		i, _ = strconv.ParseInt(v.(string), 0, 64)
+		i, err = strconv.ParseInt(v.(string), 0, 64)
 	case nil:
-		return 0
+		err = fmt.Errorf("object is nil")
 	default:
-		i, _ = strconv.ParseInt(fmt.Sprint(v), 0, 64)
+		i, err = strconv.ParseInt(fmt.Sprint(v), 0, 64)
 	}
-	return T(i)
+	return T(i), nil
 }
 
 func ParseFloat64(a any) (f float64, err error) {
@@ -71,16 +83,9 @@ func ParseFloat64(a any) (f float64, err error) {
 	return
 }
 
-func ToFloat64(a any) float64 {
-	f, err := ParseFloat64(a)
-	if err != nil {
-		panic(err)
-		return 0
-	}
-	return f
-}
 func FloatToString(v float64, step float64) string {
-	return strconv.FormatFloat(FloatToFixed(v, step), 'f', int(-math.Log10(step)+0.5), 64)
+	p := int(-math.Log10(step) + 0.5) //sometimes Log10 returns .999
+	return strconv.FormatFloat(FloatToFixed(v, step), 'f', p, 64)
 }
 
 func FloatToFixed(v float64, step float64) float64 {
@@ -90,26 +95,8 @@ func FloatToFixed(v float64, step float64) float64 {
 	return step * math.Floor(v/step)
 }
 
-func SyncMapLen(m *sync.Map) (l int) {
-	m.Range(func(key, value any) bool {
-		l++
-		return true
-	})
-	return
-}
-
-func SyncMapValueDefault0[T comparable](sm *sync.Map, k string) (res T) {
-	return SyncMapValue[T](sm, k, res)
-}
-
-func SyncMapValue[T any](sm *sync.Map, k string, defaults T) (res T) {
-	value, ok := sm.Load(k)
-	if !ok {
-		return defaults
+func Panic(err error) {
+	if err != nil {
+		panic(err)
 	}
-	res, ok = value.(T)
-	if !ok {
-		return defaults
-	}
-	return
 }
