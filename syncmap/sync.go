@@ -1,6 +1,7 @@
 package syncmap
 
 import (
+	"fmt"
 	"sync"
 )
 
@@ -12,16 +13,13 @@ func Len(sm *sync.Map) (l int) {
 func ValueStrict[T any](sm *sync.Map, k any) T {
 	value, ok := sm.Load(k)
 	if !ok {
-		panic("no such key")
+		panic(fmt.Sprintf("no such key: %v for %T map", k, *new(T)))
 	}
-	res, ok := value.(T)
-	if !ok {
-		panic("inferred wrong type")
-	}
-	return res
+	return value.(T)
 }
 
-func Value(sm *sync.Map, k any) any {
+func Value[T any](sm *sync.Map, k any) T {
 	value, _ := sm.Load(k)
-	return value
+	res, _ := value.(T)
+	return res
 }
