@@ -18,8 +18,10 @@ func ValueStrict[T any](sm *sync.Map, k any) T {
 	return value.(T)
 }
 
-func Value[T any](sm *sync.Map, k any) T {
-	value, _ := sm.Load(k)
-	res, _ := value.(T)
-	return res
+func Value[T any](sm *sync.Map, k any) (res T) {
+	value, ok := sm.Load(k)
+	if !ok {
+		return res
+	}
+	return value.(T)
 }
