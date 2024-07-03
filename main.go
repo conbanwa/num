@@ -78,7 +78,7 @@ func ParseFloat64(a any) (f float64, err error) {
 	case string:
 		f, err = strconv.ParseFloat(a, 64)
 	default:
-		err = fmt.Errorf("not a number")
+		err = fmt.Errorf(fmt.Sprint(a) + " is not a number")
 	}
 	return
 }
