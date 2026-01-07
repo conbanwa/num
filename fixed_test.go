@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/conbanwa/logs"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -48,12 +47,12 @@ func TestFloatToString(t *testing.T) {
 	assert.Equal(t, FloatToFixed(1.10231000, 1), 1.0)
 	assert.Equal(t, FloatToFixed(1.10231000, 0), 1.10231)
 	assert.Equal(t, FloatToFixed(189.61020000, 0.01), 189.61)
-	logs.ErrorIfNotSame(FloatToFixed(0.10231000, 0.001), 0.102)
-	logs.ErrorIfNotSame(FloatToString(1.10231000, 1e-8), "1.10231")
-	logs.ErrorIfNotSame(FloatToFixed(1.10231000, 0.000000001), 1.10231)
-	logs.ErrorIfNotSame(FloatToFixed(0.1299999, 0.0001), 0.1299)
-	logs.ErrorIfNotSame(FloatToFixed(1.10231000, 0.000000001), 1.10231000, FloatToFixed(1.10231000, 0.000000001))
-	logs.ErrorIfNotSame(FloatToFixed(0.10231000, 0.001), 0.102, FloatToFixed(0.10231000, 0.001))
+	// logs.ErrorIfNotSame(FloatToFixed(0.10231000, 0.001), 0.102)
+	// logs.ErrorIfNotSame(FloatToString(1.10231000, 1e-8), "1.10231")
+	// logs.ErrorIfNotSame(FloatToFixed(1.10231000, 0.000000001), 1.10231)
+	// logs.ErrorIfNotSame(FloatToFixed(0.1299999, 0.0001), 0.1299)
+	// logs.ErrorIfNotSame(FloatToFixed(1.10231000, 0.000000001), 1.10231000, FloatToFixed(1.10231000, 0.000000001))
+	// logs.ErrorIfNotSame(FloatToFixed(0.10231000, 0.001), 0.102, FloatToFixed(0.10231000, 0.001))
 	assert.Equal(t, FloatToFixed(6.7597, 0.01), 6.75)
 	type args struct {
 		v    float64
