@@ -1,6 +1,6 @@
 module github.com/conbanwa/num
 
-go 1.21.4
+go 1.21
 
 require (
 	github.com/conbanwa/compare v0.0.1
